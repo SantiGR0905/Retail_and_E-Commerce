@@ -7,7 +7,7 @@ namespace Retail.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 
-public class CategoriesController : Controller
+public class CategoriesController : ControllerBase
 {
     private readonly ICategoriesService _categoriesService;
     public CategoriesController(ICategoriesService categoriesService)

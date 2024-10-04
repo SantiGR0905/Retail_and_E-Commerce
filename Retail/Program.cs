@@ -11,6 +11,10 @@ builder.Services.AddDbContext<RetailDbContext>(options => options.UseSqlServer(c
 
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<IInventoriesRepository, InventoriesRepository>();
+builder.Services.AddScoped<IInventoriesService, InventoriesService>();
+builder.Services.AddScoped<IPermissionsRepository, PermissionsRepository>();
+builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

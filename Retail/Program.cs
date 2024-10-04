@@ -1,11 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Retail.Context;
+using Retail.Repositories;
+using Retail.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var conString = builder.Configuration.GetConnectionString("Connection");
 builder.Services.AddDbContext<RetailDbContext>(options => options.UseSqlServer(conString));
+
+builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

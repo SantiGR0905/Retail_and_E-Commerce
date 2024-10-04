@@ -21,6 +21,8 @@ builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<ISalesService, SalesService>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

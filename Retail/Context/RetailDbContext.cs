@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Retail.Model;
+using System.Reflection.Metadata;
 
 namespace Retail.Context
 {
@@ -13,8 +14,30 @@ namespace Retail.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Categories>()
+                .HasKey(u => u.CategoryId);
+
+            modelBuilder.Entity<Inventories>()
+               .HasKey(u => u.InventoryId);
+
+            modelBuilder.Entity<Permissions>()
+               .HasKey(u => u.PermissionId);
+
+            modelBuilder.Entity<PermissionsXUsers>()
+              .HasKey(u => u.PermissionXUserId);
+
+            modelBuilder.Entity<Products>()
+              .HasKey(u => u.ProductId);
+
+            modelBuilder.Entity<Sales>()
+              .HasKey(u => u.SaleId);
+
             modelBuilder.Entity<Users>()
-                .HasKey(u => u.UserId);
+              .HasKey(u => u.UserId);
+
+            modelBuilder.Entity<UserTypes>()
+            .HasKey(u => u.UserTypeId);
+
         }
         public DbSet<Categories> Categories { get; set; }
         public DbSet<Inventories> Inventories { get; set; }

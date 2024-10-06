@@ -10,5 +10,7 @@
         public required int Active { get; set; }
         public required string Model3D { get; set; }
         public required string Categories { get; set; }
+        public required DateTime Modified { get; set; }
+        public required int ModifiedBy { get; set; }
     }
 }

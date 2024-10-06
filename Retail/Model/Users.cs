@@ -6,13 +6,11 @@ namespace Retail.Model
     {
         public int UserId { get; set; }
 
-        public required string FirtsName { get; set; }
+        public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public required string Email { get; set; }
         public required string Password { get; set; }
         public required DateTime Date { get; set; }
-        public required DateTime Modified { get; set; }
-        public required int ModifiedBy { get; set; }
         public bool IsDeleted { get; set; } = false;
         public virtual required UserTypes UserTypes { get; set; }
     }

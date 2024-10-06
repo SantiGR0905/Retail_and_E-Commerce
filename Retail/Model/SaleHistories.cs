@@ -9,5 +9,7 @@
         public required string Direction { get; set; }
         public required string Users { get; set; }
         public required string Products { get; set; }
+        public required DateTime Modified { get; set; }
+        public required int ModifiedBy { get; set; }
     }
 }

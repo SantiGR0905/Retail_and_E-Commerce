@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Retail.Model
+﻿namespace Retail.Model
 {
-    public class Users
+    public class UserHistories
     {
+        public int UserHistoryId { get; set; }
         public int UserId { get; set; }
 
         public required string FirstName { get; set; }
@@ -11,7 +10,9 @@ namespace Retail.Model
         public required string Email { get; set; }
         public required string Password { get; set; }
         public required DateTime Date { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public virtual required UserTypes UserTypes { get; set; }
+        public required string UserTypes { get; set; }
+        public required DateTime Modified { get; set; }
+        public required int ModifiedBy { get; set; }
+
     }
 }

@@ -38,6 +38,17 @@ namespace Retail.Context
             modelBuilder.Entity<UserTypes>()
             .HasKey(u => u.UserTypeId);
 
+            modelBuilder.Entity<UserHistories>()
+            .HasKey(u => u.UserHistoryId);
+
+            modelBuilder.Entity<SaleHistories>()
+                .HasKey(u => u.SaleHistoryId); 
+
+            modelBuilder.Entity<ProductHistories>()
+                .HasKey(u => u.ProductHistoryId);
+
+            modelBuilder.Entity<InventoryHistories>()
+                .HasKey(u =>u.InventoryHistoryId);
         }
         public DbSet<Categories> Categories { get; set; }
         public DbSet<Inventories> Inventories { get; set; }
@@ -47,5 +58,9 @@ namespace Retail.Context
         public DbSet<Sales> Sales { get; set; }
         public DbSet<Users> Users {  get; set; }
         public DbSet<UserTypes> UserTypes { get; set; }
+        public DbSet<UserHistories> UserHistories { get; set; }
+        public DbSet<SaleHistories> SaleHistories { get; set; }
+        public DbSet<InventoryHistories> InventoryHistories { get; set; }
+        public DbSet<ProductHistories> ProductHistories { get; set; }
     }
 }

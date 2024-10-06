@@ -91,24 +91,6 @@ namespace Retail.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sales",
-                columns: table => new
-                {
-                    SaleId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StateSale = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Direction = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sales", x => x.SaleId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -141,6 +123,35 @@ namespace Retail.Migrations
                 {
                     table.PrimaryKey("PK_UserTypes", x => x.UserTypeId);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Sales",
+                columns: table => new
+                {
+                    SaleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StateSale = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Direction = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sales", x => x.SaleId);
+                    table.ForeignKey(
+                        name: "FK_Sales_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sales_UserId",
+                table: "Sales",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -165,10 +176,10 @@ namespace Retail.Migrations
                 name: "Sales");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "UserTypes");
 
             migrationBuilder.DropTable(
-                name: "UserTypes");
+                name: "Users");
         }
     }
 }

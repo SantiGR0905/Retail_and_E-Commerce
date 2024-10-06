@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Retail.Context;
 
@@ -11,9 +12,11 @@ using Retail.Context;
 namespace Retail.Migrations
 {
     [DbContext(typeof(RetailDbContext))]
-    partial class RetailDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241004080546_UpdateRelationsofSales")]
+    partial class UpdateRelationsofSales
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,12 +66,10 @@ namespace Retail.Migrations
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductsProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("InventoryId");
-
-                    b.HasIndex("ProductsProductId");
 
                     b.ToTable("Inventories");
                 });
@@ -103,17 +104,13 @@ namespace Retail.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PermissionsPermissionId")
+                    b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserTypesUserTypeId")
+                    b.Property<int>("UserTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("PermissionXUserId");
-
-                    b.HasIndex("PermissionsPermissionId");
-
-                    b.HasIndex("UserTypesUserTypeId");
 
                     b.ToTable("PermissionsXUsers");
                 });
@@ -129,7 +126,7 @@ namespace Retail.Migrations
                     b.Property<int>("Active")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoriesCategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationDate")
@@ -152,8 +149,6 @@ namespace Retail.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("CategoriesCategoryId");
-
                     b.ToTable("Products");
                 });
 
@@ -171,6 +166,9 @@ namespace Retail.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductsProductId")
                         .HasColumnType("int");
@@ -245,55 +243,12 @@ namespace Retail.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserTypesUserTypeId")
+                    b.Property<int>("UserTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("UserTypesUserTypeId");
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Retail.Model.Inventories", b =>
-                {
-                    b.HasOne("Retail.Model.Products", "Products")
-                        .WithMany()
-                        .HasForeignKey("ProductsProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Retail.Model.PermissionsXUsers", b =>
-                {
-                    b.HasOne("Retail.Model.Permissions", "Permissions")
-                        .WithMany()
-                        .HasForeignKey("PermissionsPermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Retail.Model.UserTypes", "UserTypes")
-                        .WithMany()
-                        .HasForeignKey("UserTypesUserTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permissions");
-
-                    b.Navigation("UserTypes");
-                });
-
-            modelBuilder.Entity("Retail.Model.Products", b =>
-                {
-                    b.HasOne("Retail.Model.Categories", "Categories")
-                        .WithMany()
-                        .HasForeignKey("CategoriesCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("Retail.Model.Sales", b =>
@@ -313,17 +268,6 @@ namespace Retail.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Retail.Model.Users", b =>
-                {
-                    b.HasOne("Retail.Model.UserTypes", "UserTypes")
-                        .WithMany()
-                        .HasForeignKey("UserTypesUserTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserTypes");
                 });
 #pragma warning restore 612, 618
         }

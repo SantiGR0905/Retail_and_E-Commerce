@@ -12,8 +12,8 @@ using Retail.Context;
 namespace Retail.Migrations
 {
     [DbContext(typeof(RetailDbContext))]
-    [Migration("20241004063111_Initial")]
-    partial class Initial
+    [Migration("20241004080220_UpdateRelationUserstoSales")]
+    partial class UpdateRelationUserstoSales
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -176,10 +176,12 @@ namespace Retail.Migrations
                     b.Property<int>("StateSale")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("UserId1")
                         .HasColumnType("int");
 
                     b.HasKey("SaleId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Sales");
                 });
@@ -242,6 +244,17 @@ namespace Retail.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Retail.Model.Sales", b =>
+                {
+                    b.HasOne("Retail.Model.Users", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserId");
                 });
 #pragma warning restore 612, 618
         }

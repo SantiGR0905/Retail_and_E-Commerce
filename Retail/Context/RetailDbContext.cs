@@ -49,6 +49,9 @@ namespace Retail.Context
 
             modelBuilder.Entity<InventoryHistories>()
                 .HasKey(u =>u.InventoryHistoryId);
+
+            modelBuilder.Entity<Users>().ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<Products>().ToTable(tb => tb.UseSqlOutputClause(false));
         }
         public DbSet<Categories> Categories { get; set; }
         public DbSet<Inventories> Inventories { get; set; }

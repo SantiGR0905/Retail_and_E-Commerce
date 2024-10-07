@@ -5,14 +5,14 @@
 namespace Retail.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTriggerUsers : Migration
+    public partial class AddTriggerSales : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-    CREATE OR ALTER TRIGGER TGUsers
-    ON[Users]
+    CREATE OR ALTER TRIGGER TGSales
+    ON[Sales]
     AFTER INSERT, UPDATE, DELETE
     AS
     BEGIN
@@ -20,8 +20,8 @@ namespace Retail.Migrations
     --If there are inserted or updated records
         IF EXISTS(SELECT* FROM inserted)
         BEGIN
-            INSERT INTO UserHistories(UserId, FirstName, LastName, Email, Password, Date, UserTypes, Modified, ModifiedBy)
-            SELECT i.UserId, i.FirstName, i.LastName, i.Email, i.Password, i.Date, i.UserTypesUserTypeId, GETDATE(),
+            INSERT INTO SaleHistories(SaleId, SaleDate, StateSale, Direction, Users, Products, Modified, ModifiedBy)
+            SELECT i.SaleId, i.SaleDate, i.StateSale, i.Direction, i.UsersUserId, i.ProductsProductId, GETDATE(),
                    CASE
                        WHEN EXISTS(SELECT * FROM deleted) THEN 'UPDATE'
                        ELSE 'INSERT'
@@ -32,19 +32,20 @@ namespace Retail.Migrations
     -- If there are deleted records
     IF EXISTS(SELECT * FROM deleted)
         BEGIN
-            INSERT INTO UserHistories(UserId, FirstName, LastName, Email, Password, Date, UserTypes, Modified, ModifiedBy)
-            SELECT d.UserId, d.FirstName, d.LastName, d.Email, d.Password, d.Date, d.UserTypesUserTypeId, GETDATE(), 'DELETE'
+            INSERT INTO SaleHistories(SaleId, SaleDate, StateSale, Direction, Users, Products, Modified, ModifiedBy)
+            SELECT d.SaleId, d.SaleDate, d.StateSale, d.Direction, d.UsersUserId, d.ProductsProductId, GETDATE(), 'DELETE'
                   FROM deleted d;
     END
 END;
     ");
+
 
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP TRIGGER IF EXISTS TGUsers;");
+            migrationBuilder.Sql("DROP TRIGGER IF EXISTS TGSales;");
         }
     }
 }

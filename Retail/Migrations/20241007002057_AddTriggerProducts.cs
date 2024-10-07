@@ -5,14 +5,14 @@
 namespace Retail.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTriggerUsers : Migration
+    public partial class AddTriggerProducts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-    CREATE OR ALTER TRIGGER TGUsers
-    ON[Users]
+    CREATE OR ALTER TRIGGER TGProducts
+    ON[Products]
     AFTER INSERT, UPDATE, DELETE
     AS
     BEGIN
@@ -20,8 +20,8 @@ namespace Retail.Migrations
     --If there are inserted or updated records
         IF EXISTS(SELECT* FROM inserted)
         BEGIN
-            INSERT INTO UserHistories(UserId, FirstName, LastName, Email, Password, Date, UserTypes, Modified, ModifiedBy)
-            SELECT i.UserId, i.FirstName, i.LastName, i.Email, i.Password, i.Date, i.UserTypesUserTypeId, GETDATE(),
+            INSERT INTO ProductHistories(ProductId, ProductName, Description, CreationDate, Active, Model3D, Categories, Modified, ModifiedBy)
+            SELECT i.ProductId, i.ProductName, i.Description, i.CreationDate, i.Active, i.Model3D, i.CategoriesCategoryId, GETDATE(),
                    CASE
                        WHEN EXISTS(SELECT * FROM deleted) THEN 'UPDATE'
                        ELSE 'INSERT'
@@ -32,8 +32,8 @@ namespace Retail.Migrations
     -- If there are deleted records
     IF EXISTS(SELECT * FROM deleted)
         BEGIN
-            INSERT INTO UserHistories(UserId, FirstName, LastName, Email, Password, Date, UserTypes, Modified, ModifiedBy)
-            SELECT d.UserId, d.FirstName, d.LastName, d.Email, d.Password, d.Date, d.UserTypesUserTypeId, GETDATE(), 'DELETE'
+            INSERT INTO ProductHistories(ProductId, ProductName, Description, CreationDate, Active, Model3D, Categories, Modified, ModifiedBy)
+            SELECT d.ProductId, d.ProductName, d.Description, d.CreationDate, d.Active, d.Model3D, d.CategoriesCategoryId, GETDATE(), 'DELETE'
                   FROM deleted d;
     END
 END;
@@ -44,7 +44,7 @@ END;
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP TRIGGER IF EXISTS TGUsers;");
+            migrationBuilder.Sql("DROP TRIGGER IF EXISTS TGProducts;");
         }
     }
 }

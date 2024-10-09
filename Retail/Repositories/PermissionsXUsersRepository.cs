@@ -11,6 +11,7 @@ namespace Retail.Repositories
         Task CreatePermissionsXUsers(PermissionsXUsers permissionxuser);
         Task UpdatePermissionsXUsers(PermissionsXUsers permissionxuser);
         Task SoftDeletePermissionsXUsers(int idpermissionxuser);
+        Task<bool> HasPermissionAsync(int userTypeId, int permissionId);
     }
     public class PermissionsXUsersRepository : IPermissionsXUsersRepository
     {
@@ -52,6 +53,14 @@ namespace Retail.Repositories
         {
             _dbContext.PermissionsXUsers.Update(permissionxuser);
             await _dbContext.SaveChangesAsync();
+        }
+        public async Task<bool> HasPermissionAsync(int userTypeId, int permissionId)
+        {
+            var permission = await _dbContext.PermissionsXUsers
+            .Where(p => p.UserTypes.UserTypeId == userTypeId && p.Permissions.PermissionId == permissionId && !p.IsDeleted)
+            .FirstOrDefaultAsync();
+
+            return permission != null ? true : false;
         }
     }
 }

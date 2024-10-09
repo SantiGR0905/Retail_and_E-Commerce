@@ -10,6 +10,8 @@ namespace Retail.Services
         Task CreatePermissionsXUsers(PermissionsXUsers permissionxuser);
         Task UpdatePermissionsXUsers(PermissionsXUsers permissionxuser);
         Task SoftDeletePermissionsXUsers(int idpermissionxuser);
+        Task<bool> HasPermissionAsync(int userTypeId, int permissionId);
+
     }
     public class PermissionsXUsersService : IPermissionsXUsersService
     {
@@ -38,6 +40,17 @@ namespace Retail.Services
         public async Task SoftDeletePermissionsXUsers(int idpermissionxuser)
         {
             await _permissionsXUsersRepository.SoftDeletePermissionsXUsers(idpermissionxuser);
+        }
+        public async Task<bool> HasPermissionAsync(int userTypeId, int permissionId)
+        {
+            try
+            {
+                return await _permissionsXUsersRepository.HasPermissionAsync(userTypeId, permissionId);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
     }
 }

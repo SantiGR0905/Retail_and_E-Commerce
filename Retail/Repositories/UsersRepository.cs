@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Retail.Context;
 using Retail.Model;
 
@@ -11,6 +12,7 @@ namespace Retail.Repositories
         Task CreateUsers(Users user);
         Task UpdateUsers(Users user);
         Task SoftDeleteUsers(int idUser);
+        Task<bool> ValidateUserAsync(string email, string password);
     }
     public class UsersRepository : IUsersRepository
     {
@@ -52,6 +54,26 @@ namespace Retail.Repositories
         {
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
+        }
+        public async Task<bool> ValidateUserAsync(string email, string password)
+        {
+            // Fetch the user by email
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email) ?? throw new Exception("User not found");
+
+            // User does not exist
+            if (user == null) return false;
+
+            // Initialize PasswordHasher
+            var passwordHasher = new PasswordHasher<Users>();
+
+            // Verify the password
+            var userVerification = passwordHasher.VerifyHashedPassword(user, user.Password, password);
+
+            // Check if password is correct
+            if (userVerification == PasswordVerificationResult.Success) return true;
+
+            // Password is invalid
+            return false;
         }
     }
 }

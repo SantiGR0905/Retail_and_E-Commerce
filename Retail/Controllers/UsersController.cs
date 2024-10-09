@@ -71,4 +71,34 @@ public class UsersController : Controller
         await _usersService.SoftDeleteUsers(idUser);
         return NoContent();
     }
+    [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+    public async Task<ActionResult> ValidateUser(string email, string password)
+    {
+        if (email == null || password == null) return BadRequest(ModelState);
+
+        // Validate the user
+        try
+        {
+            var isValid = await _usersService.ValidateUserAsync(email, password);
+            if (isValid)
+            {
+                // Handle successful login  
+                return Ok(new { Message = "Login successful" });
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404, ex.Message); ;
+        }
+
+        // Handle failed login
+        return Unauthorized(new { Message = "Invalid Password" });
+    }
+
+
 }

@@ -10,6 +10,7 @@ namespace Retail.Services
         Task CreateUsers(Users user);
         Task UpdateUsers(Users user);
         Task SoftDeleteUsers(int idUser);
+        Task<bool> ValidateUserAsync(string email, string password);
     }
     public class UsersService : IUsersService
     {
@@ -38,6 +39,18 @@ namespace Retail.Services
         public async Task SoftDeleteUsers(int idUser)
         {
             await _usersRepository.SoftDeleteUsers(idUser);
+        }
+        public async Task<bool> ValidateUserAsync(string email, string password)
+        {
+            try
+            {
+                return await _usersRepository.ValidateUserAsync(email, password);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
         }
     }
 }

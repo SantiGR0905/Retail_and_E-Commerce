@@ -52,6 +52,8 @@ namespace Retail.Context
 
             modelBuilder.Entity<Users>().ToTable(tb => tb.UseSqlOutputClause(false));
             modelBuilder.Entity<Products>().ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<Sales>().ToTable(tb => tb.UseSqlOutputClause(false));
+            modelBuilder.Entity<Inventories>().ToTable(tb => tb.UseSqlOutputClause(false));
         }
         public DbSet<Categories> Categories { get; set; }
         public DbSet<Inventories> Inventories { get; set; }

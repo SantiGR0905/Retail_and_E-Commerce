@@ -1,4 +1,5 @@
-﻿using Retail.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using Retail.Model;
 using Retail.Repositories;
 
 namespace Retail.Services

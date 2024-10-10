@@ -57,22 +57,16 @@ namespace Retail.Repositories
         }
         public async Task<bool> ValidateUserAsync(string email, string password)
         {
-            // Fetch the user by email
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email) ?? throw new Exception("User not found");
 
-            // User does not exist
             if (user == null) return false;
 
-            // Initialize PasswordHasher
             var passwordHasher = new PasswordHasher<Users>();
 
-            // Verify the password
             var userVerification = passwordHasher.VerifyHashedPassword(user, user.Password, password);
 
-            // Check if password is correct
             if (userVerification == PasswordVerificationResult.Success) return true;
 
-            // Password is invalid
             return false;
         }
     }

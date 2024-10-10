@@ -71,4 +71,18 @@ public class PermissionsXUsersController : Controller
         await _permissionsXUsersService.SoftDeletePermissionsXUsers(idpermissionxuser);
         return NoContent();
     }
+    [HttpGet("validate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult> ValidatePermission(int userTypeId, int permissionId)
+    {
+        bool hasPermission = await _permissionsXUsersService.HasPermissionAsync(userTypeId, permissionId);
+
+        if (hasPermission)
+        {
+            return Ok(new { Message = "User has the required permission." });
+        }
+
+        return StatusCode(StatusCodes.Status403Forbidden, "User does not have the required permission.");
+    }
 }

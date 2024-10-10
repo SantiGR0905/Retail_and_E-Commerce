@@ -81,13 +81,11 @@ public class UsersController : Controller
     {
         if (email == null || password == null) return BadRequest(ModelState);
 
-        // Validate the user
         try
         {
             var isValid = await _usersService.ValidateUserAsync(email, password);
             if (isValid)
-            {
-                // Handle successful login  
+            { 
                 return Ok(new { Message = "Login successful" });
             }
         }
@@ -96,7 +94,6 @@ public class UsersController : Controller
             return StatusCode(404, ex.Message); ;
         }
 
-        // Handle failed login
         return Unauthorized(new { Message = "Invalid Password" });
     }
 

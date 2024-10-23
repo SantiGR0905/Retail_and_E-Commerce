@@ -8,8 +8,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Categories>> GetCategory();
         Task<Categories> GetCategoryById(int idCategory);
-        Task CreateCategory(Categories Category);
-        Task UpdateCategory(Categories Category);
+        Task CreateCategory(string categoryName, string categoryDescription);
+        Task UpdateCategory(int idCategory, string categoryName, string categoryDescription);
         Task SoftDeleteCategory(int idCategory);
     }
     public class CategoriesRepository : ICategoriesRepository
@@ -42,16 +42,36 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateCategory(Categories Category)
+        public async Task CreateCategory(string categoryName, string categoryDescription)
         {
-            _dbContext.Categories.Add(Category);
+            var category = new Categories
+            {
+                CategoryName = categoryName,
+                CategoryDescription = categoryDescription
+            };
+            await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateCategory(Categories Category)
+        public async Task UpdateCategory(int idCategory, string categoryName, string categoryDescription)
         {
-            _dbContext.Categories.Update(Category);
-            await _dbContext.SaveChangesAsync();
+            var category = await _dbContext.Categories.FindAsync(idCategory) ?? throw new Exception("Category not found");
+
+            category.CategoryName = categoryName;
+            category.CategoryDescription = categoryDescription;
+
+            try
+            {
+                _dbContext.Categories.Update(category);
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+
+            }
         }
     }
 }

@@ -9,8 +9,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Users>> GetUsers();
         Task<Users> GetUsersById(int idUser);
-        Task CreateUsers(Users user);
-        Task UpdateUsers(Users user);
+        Task CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId);
+        Task UpdateUsers(int idUser ,string firstName, string lastName, string email, string password, DateTime date, int userTypeId);
         Task SoftDeleteUsers(int idUser);
         Task<bool> ValidateUserAsync(string email, string password);
     }
@@ -20,18 +20,20 @@ namespace Retail.Repositories
 
         public UsersRepository(RetailDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext; 
         }
         public async Task<IEnumerable<Users>> GetUsers()
         {
             return await _dbContext.Users
                 .Where(s => !s.IsDeleted)
+                .Include(u => u.UserTypes)
                 .ToListAsync();
         }
 
         public async Task<Users> GetUsersById(int idUser)
         {
-            return await _dbContext.Users
+            return await _dbContext.Users.AsNoTracking()
+                .Include(u => u.UserTypes)
                 .FirstOrDefaultAsync(s => s.UserId == idUser && !s.IsDeleted);
         }
         public async Task SoftDeleteUsers(int idUser)
@@ -44,16 +46,68 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateUsers(Users user)
+        public async Task CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
         {
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
+            var userType = await _dbContext.UserTypes.FindAsync(userTypeId) ?? throw new Exception("UserType not found");
+
+            // Hash the password
+            var passwordHasher = new PasswordHasher<Users>();
+            var hashedPassword = passwordHasher.HashPassword(null, password);
+
+            // Create a new User object
+            var user = new Users
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                Password = hashedPassword,
+                Date = date,
+                UserTypes = userType
+            };
+
+            try
+            {
+                await _dbContext.Users.AddAsync(user);
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public async Task UpdateUsers(Users user)
+        public async Task UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
         {
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
+            // Find the existing user by ID
+            var user = await _dbContext.Users.FindAsync(idUser) ?? throw new Exception("User not found");
+
+            // Fetch the User object based on userId and attendantId
+            var userType = await _dbContext.UserTypes.FindAsync(userTypeId) ?? throw new Exception("UserType not found");
+
+            // Hash the password
+            var passwordHasher = new PasswordHasher<Users>();
+            var hashedPassword = passwordHasher.HashPassword(user, password);
+
+            // Update
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            user.Email = email;
+            user.Password = hashedPassword;
+            user.Date = date;
+            user.UserTypes = userType;
+
+            try
+            {
+                _dbContext.Users.Update(user);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw;
+
+            }
         }
         public async Task<bool> ValidateUserAsync(string email, string password)
         {

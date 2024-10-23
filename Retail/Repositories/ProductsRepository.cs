@@ -8,8 +8,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Products>> GetProducts();
         Task<Products> GetProductsById(int idProducts);
-        Task CreateProducts(Products Products);
-        Task UpdateProducts(Products Products);
+        Task CreateProducts(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId);
+        Task UpdateProducts(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId);
         Task SoftDeleteProducts(int idProducts);
     }
 
@@ -26,12 +26,14 @@ namespace Retail.Repositories
         {
             return await _dbContext.Products
                 .Where(s => !s.IsDeleted)
+                .Include(c => c.Categories)
                 .ToListAsync();
         }
 
         public async Task<Products> GetProductsById(int idProducts)
         {
             return await _dbContext.Products
+                .Include(c => c.Categories)
                 .FirstOrDefaultAsync(s => s.ProductId == idProducts && !s.IsDeleted);
         }
 
@@ -45,16 +47,58 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateProducts(Products Products)
+        public async Task CreateProducts(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
         {
-            _dbContext.Products.Add(Products);
-            await _dbContext.SaveChangesAsync();
+            var category = await _dbContext.Categories.FindAsync(categoryId) ?? throw new Exception("Category not found");
+
+
+            var product = new Products
+            {
+                ProductName = productName,
+                Description = description,
+                CreationDate = creationDate, 
+                Active = active,
+                Model3D = model3D,
+                Categories = category
+            };
+
+            try
+            {
+                await _dbContext.Products.AddAsync(product);
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public async Task UpdateProducts(Products Products)
+        public async Task UpdateProducts(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
         {
-            _dbContext.Products.Update(Products);
-            await _dbContext.SaveChangesAsync();
+            var product = await _dbContext.Products.FindAsync(idProducts) ?? throw new Exception("Product not found");
+
+            var category = await _dbContext.Categories.FindAsync(categoryId) ?? throw new Exception("Caregory not found");
+
+            // Update
+            product.ProductName = productName;
+            product.Description = description;
+            product.CreationDate = creationDate;
+            product.Active = active;
+            product.Model3D = model3D;
+            product.Categories = category;
+
+            try
+            {
+                _dbContext.Products.Update(product);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw;
+
+            }
         }
     }
 

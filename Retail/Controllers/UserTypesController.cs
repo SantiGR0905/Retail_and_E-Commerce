@@ -34,41 +34,65 @@ public class UserTypesController : Controller
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CreateUserTypes([FromBody] UserTypes usertypes)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> CreateUserTypes(string userTypes)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _userTypesService.CreateUserTypes(usertypes);
-        return CreatedAtAction(nameof(GetUserTypesById), new { idusertype = usertypes.UserTypeId }, usertypes);
+        try
+        {
+            await _userTypesService.CreateUserTypes(userTypes);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404, ex.Message); ;
+        }
+
+
+        return StatusCode(StatusCodes.Status201Created, "UserType created successfully.");
+
     }
     [HttpPut("{idusertype}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateUserTypes(int idusertype, [FromBody] UserTypes usertypes)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateUserTypes(int idusertype, string userType)
     {
-        if (idusertype != usertypes.UserTypeId)
-            return BadRequest();
+        var existingUserType = await _userTypesService.GetUserTypesById(idusertype);
+        if (existingUserType == null) return NotFound();
 
-        var existingUserTypes = await _userTypesService.GetUserTypesById(idusertype);
-        if (existingUserTypes == null)
-            return NotFound();
 
-        await _userTypesService.UpdateUserTypes(usertypes);
-        return NoContent();
+        try
+        {
+            await _userTypesService.UpdateUserTypes(idusertype, userType);
+            return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e.Message);
+        }
     }
 
     [HttpDelete("{idusertype}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SoftDeleteUserTypes(int idusertype)
     {
         var usertypes = await _userTypesService.GetUserTypesById(idusertype);
         if (usertypes == null)
             return NotFound();
 
-        await _userTypesService.SoftDeleteUserTypes(idusertype);
-        return NoContent();
+        try
+        {
+            await _userTypesService.SoftDeleteUserTypes(idusertype);
+            return StatusCode(StatusCodes.Status200OK, ("Deleted Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e?.Message);
+        }
+
     }
 }

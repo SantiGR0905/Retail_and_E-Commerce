@@ -8,8 +8,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<PermissionsXUsers>> GetPermissionsXUsers();
         Task<PermissionsXUsers> GetPermissionsXUsersById(int idpermissionxuser);
-        Task CreatePermissionsXUsers(PermissionsXUsers permissionxuser);
-        Task UpdatePermissionsXUsers(PermissionsXUsers permissionxuser);
+        Task CreatePermissionsXUsers(int userTypeId, int permissionId);
+        Task UpdatePermissionsXUsers(int idpermissionxuser, int userTypeId, int permissionId);
         Task SoftDeletePermissionsXUsers(int idpermissionxuser);
         Task<bool> HasPermissionAsync(int userTypeId, int permissionId);
 
@@ -30,13 +30,13 @@ namespace Retail.Services
             return await _permissionsXUsersRepository.GetPermissionsXUsersById(idpermissionxuser);
         }
 
-        public async Task CreatePermissionsXUsers(PermissionsXUsers permissionxuser)
+        public async Task CreatePermissionsXUsers(int userTypeId, int permissionId)
         {
-            await _permissionsXUsersRepository.CreatePermissionsXUsers(permissionxuser);
+            await _permissionsXUsersRepository.CreatePermissionsXUsers(userTypeId, permissionId);
         }
-        public async Task UpdatePermissionsXUsers(PermissionsXUsers permission)
+        public async Task UpdatePermissionsXUsers(int idpermissionxuser, int userTypeId, int permissionId)
         {
-            await _permissionsXUsersRepository.UpdatePermissionsXUsers(permission);
+            await _permissionsXUsersRepository.UpdatePermissionsXUsers(idpermissionxuser, userTypeId, permissionId);
         }
         public async Task SoftDeletePermissionsXUsers(int idpermissionxuser)
         {

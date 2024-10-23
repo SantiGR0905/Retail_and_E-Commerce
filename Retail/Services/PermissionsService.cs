@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Permissions>> GetPermissions();
         Task<Permissions> GetPermissionsById(int permissionid);
-        Task CreatePermissions(Permissions permissions);
-        Task UpdatePermissions(Permissions permissions);
+        Task CreatePermissions(string permission);
+        Task UpdatePermissions(int permissionId, string permission);
         Task SoftDeletePermissions(int permissionid);
     }
     public class PermissionsService : IPermissionsService
@@ -27,13 +27,13 @@ namespace Retail.Services
             return await _permissionsRepository.GetPermissionsById(permissionid);
         }
 
-        public async Task CreatePermissions(Permissions permissions)
+        public async Task CreatePermissions(string permission)
         {
-            await _permissionsRepository.CreatePermissions(permissions);
+            await _permissionsRepository.CreatePermissions(permission);
         }
-        public async Task UpdatePermissions(Permissions permissions)
+        public async Task UpdatePermissions(int permissionId, string permission)
         {
-            await _permissionsRepository.UpdatePermissions(permissions);
+            await _permissionsRepository.UpdatePermissions(permissionId, permission);
         }
         public async Task SoftDeletePermissions(int permissionid)
         {

@@ -8,8 +8,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<PermissionsXUsers>> GetPermissionsXUsers();
         Task<PermissionsXUsers> GetPermissionsXUsersById(int idpermissionxuser);
-        Task CreatePermissionsXUsers(PermissionsXUsers permissionxuser);
-        Task UpdatePermissionsXUsers(PermissionsXUsers permissionxuser);
+        Task CreatePermissionsXUsers(int userTypeId, int permissionId);
+        Task UpdatePermissionsXUsers(int idpermissionxuser ,int userTypeId, int permissionId);
         Task SoftDeletePermissionsXUsers(int idpermissionxuser);
         Task<bool> HasPermissionAsync(int userTypeId, int permissionId);
     }
@@ -25,12 +25,16 @@ namespace Retail.Repositories
         {
             return await _dbContext.PermissionsXUsers
                 .Where(s => !s.IsDeleted)
+                .Include(p => p.Permissions)
+                .Include(u => u.UserTypes)
                 .ToListAsync();
         }
 
         public async Task<PermissionsXUsers> GetPermissionsXUsersById(int idpermissionxuser)
         {
             return await _dbContext.PermissionsXUsers
+                .Include(p => p.Permissions)
+                .Include(u => u.UserTypes)
                 .FirstOrDefaultAsync(s => s.PermissionXUserId == idpermissionxuser && !s.IsDeleted);
         }
         public async Task SoftDeletePermissionsXUsers(int idpermissionxuser)
@@ -43,16 +47,51 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreatePermissionsXUsers(PermissionsXUsers permissionxuser)
+        public async Task CreatePermissionsXUsers(int userTypeId, int permissionId)
         {
-            _dbContext.PermissionsXUsers.Add(permissionxuser);
-            await _dbContext.SaveChangesAsync();
+            var userType = await _dbContext.UserTypes.FindAsync(userTypeId) ?? throw new Exception("UserType not found");
+            var permission = await _dbContext.Permissions.FindAsync(permissionId) ?? throw new Exception("Permission not found");
+
+            var permissionxuser = new PermissionsXUsers
+            {
+                UserTypes = userType,
+                Permissions = permission
+            };
+
+            try
+            {
+                await _dbContext.PermissionsXUsers.AddAsync(permissionxuser);
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public async Task UpdatePermissionsXUsers(PermissionsXUsers permissionxuser)
+        public async Task UpdatePermissionsXUsers(int idpermissionxuser, int userTypeId, int permissionId)
         {
-            _dbContext.PermissionsXUsers.Update(permissionxuser);
-            await _dbContext.SaveChangesAsync();
+            var permissionxuser = await _dbContext.PermissionsXUsers.FindAsync(idpermissionxuser) ?? throw new Exception("PermissionXUser not found");
+
+            var userType = await _dbContext.UserTypes.FindAsync(userTypeId) ?? throw new Exception("UserType not found");
+            var permission = await _dbContext.Permissions.FindAsync(permissionId) ?? throw new Exception("Permission not found");
+
+            // Update
+            permissionxuser.UserTypes = userType;
+            permissionxuser.Permissions = permission;
+
+            try
+            {
+                _dbContext.PermissionsXUsers.Update(permissionxuser);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw;
+
+            }
         }
         public async Task<bool> HasPermissionAsync(int userTypeId, int permissionId)
         {

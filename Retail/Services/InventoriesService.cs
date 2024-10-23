@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Inventories>> GetInventory();
         Task<Inventories> GetInventoryById(int idInventory);
-        Task CreateInventory(Inventories inventory);
-        Task UpdateInventory(Inventories inventory);
+        Task CreateInventory(int amount, DateTime lastUpdate, int productId);
+        Task UpdateInventory(int idInventory, int amount, DateTime lastUpdate, int productId);
         Task SoftDeleteInventory(int idInventory);
     }
 
@@ -30,14 +30,14 @@ namespace Retail.Services
             return await _inventoriesRepository.GetInventoryById(idInventory);
         }
 
-        public async Task CreateInventory(Inventories inventory)
+        public async Task CreateInventory(int amount, DateTime lastUpdate, int productId)
         {
-            await _inventoriesRepository.CreateInventory(inventory);
+            await _inventoriesRepository.CreateInventory(amount, lastUpdate, productId);
         }
 
-        public async Task UpdateInventory(Inventories inventory)
+        public async Task UpdateInventory(int idInventory, int amount, DateTime lastUpdate, int productId)
         {
-            await _inventoriesRepository.UpdateInventory(inventory);
+            await _inventoriesRepository.UpdateInventory(idInventory, amount, lastUpdate, productId);
         }
 
         public async Task SoftDeleteInventory(int idInventory)

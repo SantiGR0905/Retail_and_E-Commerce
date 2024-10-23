@@ -8,8 +8,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Permissions>> GetPermissions();
         Task<Permissions> GetPermissionsById(int permissionid);
-        Task CreatePermissions(Permissions permissions);
-        Task UpdatePermissions(Permissions permissions);
+        Task CreatePermissions(string permission);
+        Task UpdatePermissions(int permissionId, string permission);
         Task SoftDeletePermissions(int permissionid);
     }
     public class PermissionsRepository : IPermissionsRepository
@@ -42,16 +42,34 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreatePermissions(Permissions permissions)
+        public async Task CreatePermissions(string permission)
         {
-            _dbContext.Permissions.Add(permissions);
+            var permissions = new Permissions
+            {
+                Permission = permission
+            };
+            await _dbContext.Permissions.AddAsync(permissions);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdatePermissions(Permissions permissions)
+        public async Task UpdatePermissions(int permissionId, string permission)
         {
-            _dbContext.Permissions.Update(permissions);
-            await _dbContext.SaveChangesAsync();
+            var permissions = await _dbContext.Permissions.FindAsync(permissionId) ?? throw new Exception("Permission not found");
+
+            permissions.Permission = permission;
+
+            try
+            {
+                _dbContext.Permissions.Update(permissions);
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+
+            }
         }
     }
 }

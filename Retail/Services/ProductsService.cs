@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Products>> GetProduct();
         Task<Products> GetProductById(int idProduct);
-        Task CreateProduct(Products product);
-        Task UpdateProduct(Products product);
+        Task CreateProduct(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId);
+        Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId);
         Task SoftDeleteProduct(int idProduct);
     }
 
@@ -30,14 +30,14 @@ namespace Retail.Services
             return await _productRepository.GetProductsById(idProduct);
         }
 
-        public async Task CreateProduct(Products product)
+        public async Task CreateProduct(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
         {
-            await _productRepository.CreateProducts(product);
+            await _productRepository.CreateProducts(productName, description, creationDate, active, model3D, categoryId);
         }
 
-        public async Task UpdateProduct(Products product)
+        public async Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
         {
-            await _productRepository.UpdateProducts(product);
+            await _productRepository.UpdateProducts(idProducts, productName, description, creationDate, active, model3D, categoryId);
         }
 
         public async Task SoftDeleteProduct(int idProduct)

@@ -38,42 +38,64 @@ public class CategoriesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CreateCategory([FromBody] Categories category)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> CreateCategory(string categoryName, string categoryDescription)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _categoriesService.CreateCategory(category);
-        return CreatedAtAction(nameof(GetCategoryById), new { idCategory = category.CategoryId }, category);
+        try
+        {
+            await _categoriesService.CreateCategory(categoryName ,categoryDescription);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404, ex.Message); ;
+        }
+
+
+        return StatusCode(StatusCodes.Status201Created, "Category created successfully.");
     }
 
     [HttpPut("{idCategory}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateCategory(int idCategory, [FromBody] Categories category)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateCategory(int idCategory, string categoryName, string categoryDescription)
     {
-        if (idCategory != category.CategoryId)
-            return BadRequest();
-
         var existingCategory = await _categoriesService.GetCategoryById(idCategory);
-        if (existingCategory == null)
-            return NotFound();
+        if (existingCategory == null) return NotFound();
 
-        await _categoriesService.UpdateCategory(category);
-        return NoContent();
+
+        try
+        {
+            await _categoriesService.UpdateCategory(idCategory, categoryName, categoryDescription);
+            return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e.Message);
+        }
     }
 
     [HttpDelete("{idCategory}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SoftDeleteCategory(int idCategory)
     {
-        var category = await _categoriesService.GetCategoryById(idCategory);
-        if (category == null)
+        var categories = await _categoriesService.GetCategoryById(idCategory);
+        if (categories == null)
             return NotFound();
 
-        await _categoriesService.SoftDeleteCategory(idCategory);
-        return NoContent();
+        try
+        {
+            await _categoriesService.SoftDeleteCategory(idCategory);
+            return StatusCode(StatusCodes.Status200OK, ("Deleted Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e?.Message);
+        }
     }
 }

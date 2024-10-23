@@ -37,42 +37,64 @@ public class ProductsController : Controller
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CreateProduct([FromBody] Products product)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> CreateProduct(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _productsService.CreateProduct(product);
-        return CreatedAtAction(nameof(GetProductById), new { idProduct = product.ProductId }, product);
+        try
+        {
+            await _productsService.CreateProduct(productName, description, creationDate, active, model3D, categoryId);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404, ex.Message); ;
+        }
+
+
+        return StatusCode(StatusCodes.Status201Created, "Product created successfully.");
     }
 
     [HttpPut("{idProduct}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateProduct(int idProduct, [FromBody] Products product)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateProduct(int idProduct, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
     {
-        if (idProduct != product.ProductId)
-            return BadRequest();
+        var existingProducts = await _productsService.GetProductById(idProduct);
+        if (existingProducts == null) return NotFound();
 
-        var existingProduct = await _productsService.GetProductById(idProduct);
-        if (existingProduct == null)
-            return NotFound();
 
-        await _productsService.UpdateProduct(product);
-        return NoContent();
+        try
+        {
+            await _productsService.UpdateProduct(idProduct, productName, description, creationDate, active, model3D, categoryId);
+            return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e.Message);
+        }
     }
 
     [HttpDelete("{idProduct}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SoftDeleteProduct(int idProduct)
     {
-        var product = await _productsService.GetProductById(idProduct);
-        if (product == null)
+        var products = await _productsService.GetProductById(idProduct);
+        if (products == null)
             return NotFound();
 
-        await _productsService.SoftDeleteProduct(idProduct);
-        return NoContent();
+        try
+        {
+            await _productsService.SoftDeleteProduct(idProduct);
+            return StatusCode(StatusCodes.Status200OK, ("Deleted Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e?.Message);
+        }
     }
 }

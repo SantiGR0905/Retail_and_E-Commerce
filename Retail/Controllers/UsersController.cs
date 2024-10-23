@@ -34,42 +34,64 @@ public class UsersController : Controller
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CreateSales([FromBody] Users user)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        await _usersService.CreateUsers(user);
-        return CreatedAtAction(nameof(GetUsersById), new { idUser = user.UserId }, user);
+        try
+        {
+            await _usersService.CreateUsers(firstName, lastName, email, password, date, userTypeId);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404, ex.Message); ;
+        }
+
+
+        return StatusCode(StatusCodes.Status201Created, "User created successfully.");
     }
     [HttpPut("{idUser}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateUsers(int idUser, [FromBody] Users user)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
     {
-        if (idUser != user.UserId)
-            return BadRequest();
+        var existingUser = await _usersService.GetUsersById(idUser);
+        if (existingUser == null) return NotFound();
 
-        var existingUsers = await _usersService.GetUsersById(idUser);
-        if (existingUsers == null)
-            return NotFound();
-
-        await _usersService.UpdateUsers(user);
-        return NoContent();
+        try
+        {
+            await _usersService.UpdateUsers(idUser, firstName, lastName, email, password, date, userTypeId);
+            return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e.Message);
+        }
     }
 
     [HttpDelete("{idUser}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SoftDeleteUsers(int idUser)
     {
         var users = await _usersService.GetUsersById(idUser);
         if (users == null)
             return NotFound();
 
-        await _usersService.SoftDeleteUsers(idUser);
-        return NoContent();
+        try
+        {
+            await _usersService.SoftDeleteUsers(idUser);
+            return StatusCode(StatusCodes.Status200OK, ("Deleted Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e?.Message);
+        }
     }
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -37,42 +37,63 @@ public class InventoriesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CreateInventory([FromBody] Inventories inventory)
+    public async Task<ActionResult> CreateInventory(int amount, DateTime lastUpdate, int productId)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        await _inventoriesService.CreateInventory(inventory);
-        return CreatedAtAction(nameof(GetInventoryById), new { idInventory = inventory.InventoryId }, inventory);
+        try
+        {
+            await _inventoriesService.CreateInventory(amount, lastUpdate, productId);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(404, ex.Message); ;
+        }
+
+
+        return StatusCode(StatusCodes.Status201Created, "Inventory created successfully.");
     }
 
     [HttpPut("{idInventory}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateInventory(int idInventory, [FromBody] Inventories inventory)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateInventory(int idInventory, int amount, DateTime lastUpdate, int productId)
     {
-        if (idInventory != inventory.InventoryId)
-            return BadRequest();
-
         var existingInventory = await _inventoriesService.GetInventoryById(idInventory);
-        if (existingInventory == null)
-            return NotFound();
+        if (existingInventory == null) return NotFound();
 
-        await _inventoriesService.UpdateInventory(inventory);
-        return NoContent();
+
+        try
+        {
+            await _inventoriesService.UpdateInventory(idInventory, amount, lastUpdate, productId);
+            return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e.Message);
+        }
     }
 
     [HttpDelete("{idInventory}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SoftDeleteInventory(int idInventory)
     {
-        var inventory = await _inventoriesService.GetInventoryById(idInventory);
-        if (inventory == null)
+        var inventories = await _inventoriesService.GetInventoryById(idInventory);
+        if (inventories == null)
             return NotFound();
 
-        await _inventoriesService.SoftDeleteInventory(idInventory);
-        return NoContent();
+        try
+        {
+            await _inventoriesService.SoftDeleteInventory(idInventory);
+            return StatusCode(StatusCodes.Status200OK, ("Deleted Successfully"));
+        }
+        catch (Exception e)
+        {
+            return StatusCode(404, e?.Message);
+        }
     }
 }

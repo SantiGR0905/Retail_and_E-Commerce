@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Retail.Context;
 
@@ -11,9 +12,11 @@ using Retail.Context;
 namespace Retail.Migrations
 {
     [DbContext(typeof(RetailDbContext))]
-    partial class RetailDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241020042743_UpdateControllers")]
+    partial class UpdateControllers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace Retail.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Retail.Model.Inventories", b =>
@@ -70,7 +73,7 @@ namespace Retail.Migrations
 
                     b.HasIndex("ProductsProductId");
 
-                    b.ToTable("Inventories", (string)null);
+                    b.ToTable("Inventories");
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
@@ -107,7 +110,7 @@ namespace Retail.Migrations
 
                     b.HasKey("InventoryHistoryId");
 
-                    b.ToTable("InventoryHistories", (string)null);
+                    b.ToTable("InventoryHistories");
                 });
 
             modelBuilder.Entity("Retail.Model.Permissions", b =>
@@ -127,7 +130,7 @@ namespace Retail.Migrations
 
                     b.HasKey("PermissionId");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("Retail.Model.PermissionsXUsers", b =>
@@ -153,7 +156,7 @@ namespace Retail.Migrations
 
                     b.HasIndex("UserTypesUserTypeId");
 
-                    b.ToTable("PermissionsXUsers", (string)null);
+                    b.ToTable("PermissionsXUsers");
                 });
 
             modelBuilder.Entity("Retail.Model.ProductHistories", b =>
@@ -200,7 +203,7 @@ namespace Retail.Migrations
 
                     b.HasKey("ProductHistoryId");
 
-                    b.ToTable("ProductHistories", (string)null);
+                    b.ToTable("ProductHistories");
                 });
 
             modelBuilder.Entity("Retail.Model.Products", b =>
@@ -239,7 +242,7 @@ namespace Retail.Migrations
 
                     b.HasIndex("CategoriesCategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
@@ -284,7 +287,7 @@ namespace Retail.Migrations
 
                     b.HasKey("SaleHistoryId");
 
-                    b.ToTable("SaleHistories", (string)null);
+                    b.ToTable("SaleHistories");
                 });
 
             modelBuilder.Entity("Retail.Model.Sales", b =>
@@ -320,7 +323,7 @@ namespace Retail.Migrations
 
                     b.HasIndex("UsersUserId");
 
-                    b.ToTable("Sales", (string)null);
+                    b.ToTable("Sales");
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
@@ -370,7 +373,7 @@ namespace Retail.Migrations
 
                     b.HasKey("UserHistoryId");
 
-                    b.ToTable("UserHistories", (string)null);
+                    b.ToTable("UserHistories");
                 });
 
             modelBuilder.Entity("Retail.Model.UserTypes", b =>
@@ -390,7 +393,7 @@ namespace Retail.Migrations
 
                     b.HasKey("UserTypeId");
 
-                    b.ToTable("UserTypes", (string)null);
+                    b.ToTable("UserTypes");
                 });
 
             modelBuilder.Entity("Retail.Model.Users", b =>
@@ -430,7 +433,7 @@ namespace Retail.Migrations
 
                     b.HasIndex("UserTypesUserTypeId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });

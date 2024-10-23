@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Sales>> GetSales();
         Task<Sales> GetSalesById(int idsale);
-        Task CreateSales(Sales sales);
-        Task UpdateSales(Sales sales);
+        Task CreateSales(DateTime saleDate, int stateSale, string direction, int userId, int productId);
+        Task UpdateSales(int idsales, DateTime saleDate, int stateSale, string direction, int userId, int productId);
         Task SoftDeleteSales(int idsale);
     }
     public class SalesService : ISalesService
@@ -27,13 +27,13 @@ namespace Retail.Services
             return await _salesRepository.GetSalesById(idsale);
         }
 
-        public async Task CreateSales(Sales sales)
+        public async Task CreateSales(DateTime saleDate, int stateSale, string direction, int userId, int productId)
         {
-            await _salesRepository.CreateSales(sales);
+            await _salesRepository.CreateSales(saleDate, stateSale, direction, userId, productId);
         }
-        public async Task UpdateSales(Sales sales)
+        public async Task UpdateSales(int idsales, DateTime saleDate, int stateSale, string direction, int userId, int productId)
         {
-            await _salesRepository.UpdateSales(sales);
+            await _salesRepository.UpdateSales(idsales, saleDate, stateSale, direction, userId, productId);
         }
         public async Task SoftDeleteSales(int idsale)
         {

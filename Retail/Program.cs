@@ -25,6 +25,16 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUserTypesRepository, UserTypesRepository>();
 builder.Services.AddScoped<IUserTypesService, UserTypesService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+    builder => builder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +42,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();

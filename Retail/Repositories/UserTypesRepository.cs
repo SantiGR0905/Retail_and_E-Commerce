@@ -8,8 +8,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<UserTypes>> GetUserTypes();
         Task<UserTypes> GetUserTypesById(int idusertype);
-        Task CreateUserTypes(UserTypes usertype);
-        Task UpdateUserTypes(UserTypes usertype);
+        Task CreateUserTypes(string userType);
+        Task UpdateUserTypes(int idusertype, string userType);
         Task SoftDeleteUserTypes(int idusertype);
     }
     public class UserTypesRepository : IUserTypesRepository
@@ -29,7 +29,7 @@ namespace Retail.Repositories
 
         public async Task<UserTypes> GetUserTypesById(int idusertype)
         {
-            return await _dbContext.UserTypes
+            return await _dbContext.UserTypes.AsNoTracking()
                 .FirstOrDefaultAsync(s => s.UserTypeId == idusertype && !s.IsDeleted);
         }
         public async Task SoftDeleteUserTypes(int idusertypes)
@@ -42,16 +42,34 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateUserTypes(UserTypes usertype)
+        public async Task CreateUserTypes(string userType)
         {
-            _dbContext.UserTypes.Add(usertype);
+            var usertype = new UserTypes
+            {
+                UserType = userType
+            };
+            await _dbContext.UserTypes.AddAsync(usertype);    
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateUserTypes(UserTypes usertype)
+        public async Task UpdateUserTypes(int idusertype, string userType)
         {
-            _dbContext.UserTypes.Update(usertype);
-            await _dbContext.SaveChangesAsync();
+            var usertype = await _dbContext.UserTypes.FindAsync(idusertype) ?? throw new Exception("UserType not found");
+
+            usertype.UserType = userType;
+
+            try
+            {
+                _dbContext.UserTypes.Update(usertype);
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+
+            }
         }
     }
 }

@@ -93,27 +93,34 @@ public class UsersController : Controller
             return StatusCode(404, e?.Message);
         }
     }
+    public class LoginRequest
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-    public async Task<ActionResult> ValidateUser(string email, string password)
+
+    public async Task<ActionResult> ValidateUser([FromBody] LoginRequest loginRequest)
     {
-        if (email == null || password == null) return BadRequest(ModelState);
+        if (loginRequest.Email == null || loginRequest.Password == null)
+            return BadRequest(ModelState);
 
         try
         {
-            var isValid = await _usersService.ValidateUserAsync(email, password);
+            var isValid = await _usersService.ValidateUserAsync(loginRequest.Email, loginRequest.Password);
             if (isValid)
-            { 
+            {
                 return Ok(new { Message = "Login successful" });
             }
         }
         catch (Exception ex)
         {
-            return StatusCode(404, ex.Message); ;
+            return StatusCode(404, ex.Message);
         }
 
         return Unauthorized(new { Message = "Invalid Password" });

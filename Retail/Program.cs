@@ -41,6 +41,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseRouting();
 
 app.UseCors("AllowAll");
 // Configure the HTTP request pipeline.

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Retail.Model;
 using Retail.Services;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -35,13 +36,13 @@ public class UserTypesController : Controller
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreateUserTypes(string userTypes)
+    public async Task<ActionResult> CreateUserTypes([FromBody] UserTypesDto userTypes)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         try
         {
-            await _userTypesService.CreateUserTypes(userTypes);
+            await _userTypesService.CreateUserTypes(userTypes.UserType);
         }
         catch (Exception ex)
         {
@@ -57,7 +58,7 @@ public class UserTypesController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateUserTypes(int idusertype, string userType)
+    public async Task<IActionResult> UpdateUserTypes(int idusertype, UserTypesDto userTypes)
     {
         var existingUserType = await _userTypesService.GetUserTypesById(idusertype);
         if (existingUserType == null) return NotFound();
@@ -65,7 +66,7 @@ public class UserTypesController : Controller
 
         try
         {
-            await _userTypesService.UpdateUserTypes(idusertype, userType);
+            await _userTypesService.UpdateUserTypes(idusertype, userTypes.UserType);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

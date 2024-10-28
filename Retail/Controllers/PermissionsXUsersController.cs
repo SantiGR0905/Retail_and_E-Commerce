@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Retail.Model;
 using Retail.Services;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -35,13 +36,13 @@ public class PermissionsXUsersController : Controller
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreatePermissionsXUsers(int userTypeId, int permissionId)
+    public async Task<ActionResult> CreatePermissionsXUsers([FromBody] PermissionsXUsersDto permissionsXUsers)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         try
         {
-            await _permissionsXUsersService.CreatePermissionsXUsers(userTypeId, permissionId);
+            await _permissionsXUsersService.CreatePermissionsXUsers(permissionsXUsers.UserTypeId, permissionsXUsers.PermissionId);
         }
         catch (Exception ex)
         {
@@ -56,7 +57,7 @@ public class PermissionsXUsersController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdatePermissionsXUsers(int idpermissionxuser, int userTypeId, int permissionId)
+    public async Task<IActionResult> UpdatePermissionsXUsers(int idpermissionxuser, [FromBody] PermissionsXUsersDto permissionsXUsers)
     {
         var existingPermissionsXUsers = await _permissionsXUsersService.GetPermissionsXUsersById(idpermissionxuser);
         if (existingPermissionsXUsers == null) return NotFound();
@@ -64,7 +65,7 @@ public class PermissionsXUsersController : Controller
 
         try
         {
-            await _permissionsXUsersService.UpdatePermissionsXUsers(idpermissionxuser, userTypeId, permissionId);
+            await _permissionsXUsersService.UpdatePermissionsXUsers(idpermissionxuser, permissionsXUsers.UserTypeId, permissionsXUsers.PermissionId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

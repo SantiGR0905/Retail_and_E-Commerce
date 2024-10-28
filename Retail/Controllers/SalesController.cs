@@ -2,6 +2,7 @@
 using Retail.Model;
 using Retail.Services;
 using System;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -36,13 +37,13 @@ public class SalesController : Controller
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreateSales(DateTime saleDate, int stateSale, string direction, int userId, int productId)
+    public async Task<ActionResult> CreateSales([FromBody] SalesDto sale)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         try
         {
-            await _salesService.CreateSales(saleDate, stateSale, direction, userId, productId);
+            await _salesService.CreateSales(sale.SaleDate, sale.StateSale, sale.Direction, sale.UserId, sale.ProductId);
         }
         catch (Exception ex)
         {
@@ -57,7 +58,7 @@ public class SalesController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateSales(int idsale,DateTime saleDate, int stateSale, string direction, int userId, int productId)
+    public async Task<IActionResult> UpdateSales(int idsale, [FromBody] SalesDto sale)
     {
         var existingSales = await _salesService.GetSalesById(idsale);
         if (existingSales == null) return NotFound();
@@ -65,7 +66,7 @@ public class SalesController : Controller
 
         try
         {
-            await _salesService.UpdateSales(idsale, saleDate, stateSale, direction, userId, productId);
+            await _salesService.UpdateSales(idsale, sale.SaleDate, sale.StateSale, sale.Direction, sale.UserId, sale.ProductId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Retail.Model;
 using Retail.Services;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -37,13 +38,13 @@ public class InventoriesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> CreateInventory(int amount, DateTime lastUpdate, int productId)
+    public async Task<ActionResult> CreateInventory([FromBody] InventoriesDto inventory)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         try
         {
-            await _inventoriesService.CreateInventory(amount, lastUpdate, productId);
+            await _inventoriesService.CreateInventory(inventory.Amount, inventory.LastUpdate, inventory.ProductId);
         }
         catch (Exception ex)
         {
@@ -59,7 +60,7 @@ public class InventoriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateInventory(int idInventory, int amount, DateTime lastUpdate, int productId)
+    public async Task<IActionResult> UpdateInventory(int idInventory, [FromBody] InventoriesDto inventory)
     {
         var existingInventory = await _inventoriesService.GetInventoryById(idInventory);
         if (existingInventory == null) return NotFound();
@@ -67,7 +68,7 @@ public class InventoriesController : ControllerBase
 
         try
         {
-            await _inventoriesService.UpdateInventory(idInventory, amount, lastUpdate, productId);
+            await _inventoriesService.UpdateInventory(idInventory, inventory.Amount, inventory.LastUpdate, inventory.ProductId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

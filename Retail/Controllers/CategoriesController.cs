@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Retail.Model;
 using Retail.Services;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -39,13 +40,13 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreateCategory(string categoryName, string categoryDescription)
+    public async Task<ActionResult> CreateCategory([FromBody] CategoriesDto category)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         try
         {
-            await _categoriesService.CreateCategory(categoryName ,categoryDescription);
+            await _categoriesService.CreateCategory(category.CategoryName ,category.CategoryDescription);
         }
         catch (Exception ex)
         {
@@ -61,7 +62,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateCategory(int idCategory, string categoryName, string categoryDescription)
+    public async Task<IActionResult> UpdateCategory(int idCategory, CategoriesDto category)
     {
         var existingCategory = await _categoriesService.GetCategoryById(idCategory);
         if (existingCategory == null) return NotFound();
@@ -69,7 +70,7 @@ public class CategoriesController : ControllerBase
 
         try
         {
-            await _categoriesService.UpdateCategory(idCategory, categoryName, categoryDescription);
+            await _categoriesService.UpdateCategory(idCategory, category.CategoryName, category.CategoryDescription);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

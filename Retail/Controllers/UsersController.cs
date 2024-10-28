@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Retail.Model;
 using Retail.Services;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -31,40 +32,41 @@ public class UsersController : Controller
 
         return Ok(users);
     }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> CreateUsers([FromBody] UserDto user)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         try
         {
-            await _usersService.CreateUsers(firstName, lastName, email, password, date, userTypeId);
+            await _usersService.CreateUsers(user.FirstName, user.LastName, user.Email, user.Password, user.Date, user.UserTypeId);
         }
         catch (Exception ex)
         {
-            return StatusCode(404, ex.Message); ;
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
-
 
         return StatusCode(StatusCodes.Status201Created, "User created successfully.");
     }
+
     [HttpPut("{idUser}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
+    public async Task<IActionResult> UpdateUsers(int idUser, [FromBody] UserDto user)
     {
         var existingUser = await _usersService.GetUsersById(idUser);
         if (existingUser == null) return NotFound();
 
         try
         {
-            await _usersService.UpdateUsers(idUser, firstName, lastName, email, password, date, userTypeId);
+            await _usersService.UpdateUsers(idUser, user.FirstName, user.LastName, user.Email, user.Password, user.Date, user.UserTypeId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

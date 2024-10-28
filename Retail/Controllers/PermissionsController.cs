@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Retail.Model;
 using Retail.Services;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -35,13 +36,13 @@ public class PermissionsController : Controller
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreatePermissions(string permission)
+    public async Task<ActionResult> CreatePermissions([FromBody] PermissionsDto permission)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         try
         {
-            await _permissionsService.CreatePermissions(permission);
+            await _permissionsService.CreatePermissions(permission.Permission);
         }
         catch (Exception ex)
         {
@@ -55,14 +56,14 @@ public class PermissionsController : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
 
-    public async Task<IActionResult> UpdatePermissions(int permissionid, string permission)
+    public async Task<IActionResult> UpdatePermissions(int permissionid, [FromBody] PermissionsDto permission)
     {
         var existingPermissions = await _permissionsService.GetPermissionsById(permissionid);
         if (existingPermissions == null) return NotFound();
 
         try
         {
-            await _permissionsService.UpdatePermissions(permissionid, permission);
+            await _permissionsService.UpdatePermissions(permissionid, permission.Permission);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

@@ -10,8 +10,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Inventories>> GetInventory();
         Task<Inventories> GetInventoryById(int idInventory);
-        Task CreateInventory(int amount, DateTime lastUpdate, int productId);
-        Task UpdateInventory(int idInventory, int amount, DateTime lastUpdate, int productId);
+        Task CreateInventory(int amount);
+        Task UpdateInventory(int idInventory, int amount);
         Task SoftDeleteInventory(int idInventory);
     }
 
@@ -28,14 +28,12 @@ namespace Retail.Repositories
         {
             return await _dbContext.Inventories
                 .Where(s => !s.IsDeleted)
-                .Include(p => p.Products)
                 .ToListAsync();
         }
 
         public async Task<Inventories> GetInventoryById(int idInventory)
         {
             return await _dbContext.Inventories.AsNoTracking()
-                .Include(p => p.Products)
                 .FirstOrDefaultAsync(s => s.InventoryId == idInventory && !s.IsDeleted);
         }
 
@@ -49,16 +47,14 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateInventory(int amount, DateTime lastUpdate, int productId)
+        public async Task CreateInventory(int amount)
         {
-            var product = await _dbContext.Products.FindAsync(productId) ?? throw new Exception("Product not found");
 
          
             var inventory = new Inventories
             {
                 Amount = amount,
-                LastUpdate = lastUpdate,
-                Products = product
+                LastUpdate = DateTime.Now
             };
 
             try
@@ -73,16 +69,13 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task UpdateInventory(int idInventory, int amount, DateTime lastUpdate, int productId)
+        public async Task UpdateInventory(int idInventory, int amount)
         {
             var inventory = await _dbContext.Inventories.FindAsync(idInventory) ?? throw new Exception("Inventory not found");
 
-            var product = await _dbContext.Products.FindAsync(productId) ?? throw new Exception("Product not found");
-
             // Update
             inventory.Amount = amount;
-            inventory.LastUpdate = lastUpdate;
-            inventory.Products = product;
+            inventory.LastUpdate = DateTime.Now;
 
             try
             {

@@ -65,7 +65,7 @@ public class PermissionsXUsersController : Controller
 
         try
         {
-            await _permissionsXUsersService.UpdatePermissionsXUsers(idpermissionxuser, permissionsXUsers.UserTypeId, permissionsXUsers.PermissionId);
+            await _permissionsXUsersService.UpdatePermissionsXUsers(permissionsXUsers.PermissionXUserId, permissionsXUsers.UserTypeId, permissionsXUsers.PermissionId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

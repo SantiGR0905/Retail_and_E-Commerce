@@ -58,7 +58,7 @@ public class UserTypesController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateUserTypes(int idusertype, UserTypesDto userTypes)
+    public async Task<IActionResult> UpdateUserTypes(int idusertype, [FromBody] UserTypesDto userTypes)
     {
         var existingUserType = await _userTypesService.GetUserTypesById(idusertype);
         if (existingUserType == null) return NotFound();
@@ -66,7 +66,7 @@ public class UserTypesController : Controller
 
         try
         {
-            await _userTypesService.UpdateUserTypes(idusertype, userTypes.UserType);
+            await _userTypesService.UpdateUserTypes(userTypes.UserTypeId, userTypes.UserType);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

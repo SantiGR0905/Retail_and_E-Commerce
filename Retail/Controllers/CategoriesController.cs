@@ -70,7 +70,7 @@ public class CategoriesController : ControllerBase
 
         try
         {
-            await _categoriesService.UpdateCategory(idCategory, category.CategoryName, category.CategoryDescription);
+            await _categoriesService.UpdateCategory(category.CategoryId , category.CategoryName, category.CategoryDescription);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

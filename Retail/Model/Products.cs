@@ -12,5 +12,6 @@ namespace Retail.Model
         public required string Model3D { get; set; }
         public bool IsDeleted { get; set; } = false;
         public virtual required Categories Categories { get; set; }
+        public virtual required Inventories Inventories { get; set; }
     }
 }

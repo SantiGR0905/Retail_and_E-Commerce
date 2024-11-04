@@ -8,6 +8,5 @@ namespace Retail.Model.Dto
         public int InventoryId { get; set; }
         public int Amount { get; set; }
         public DateTime LastUpdate { get; set; }
-        public int ProductId { get; set; }
     }
 }

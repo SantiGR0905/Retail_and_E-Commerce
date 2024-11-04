@@ -63,7 +63,7 @@ public class PermissionsController : Controller
 
         try
         {
-            await _permissionsService.UpdatePermissions(permissionid, permission.Permission);
+            await _permissionsService.UpdatePermissions(permission.PermissionId, permission.Permission);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

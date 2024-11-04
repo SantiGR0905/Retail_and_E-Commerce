@@ -9,8 +9,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Users>> GetUsers();
         Task<Users> GetUsersById(int idUser);
-        Task CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId);
-        Task UpdateUsers(int idUser ,string firstName, string lastName, string email, string password, DateTime date, int userTypeId);
+        Task CreateUsers(string firstName, string lastName, string email, string password, int userTypeId);
+        Task UpdateUsers(int idUser ,string firstName, string lastName, string email, string password, DateTime originalDate, int userTypeId);
         Task SoftDeleteUsers(int idUser);
         Task<bool> ValidateUserAsync(string email, string password);
     }
@@ -46,7 +46,7 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
+        public async Task CreateUsers(string firstName, string lastName, string email, string password, int userTypeId)
         {
             var userType = await _dbContext.UserTypes.FindAsync(userTypeId) ?? throw new Exception("UserType not found");
 
@@ -61,7 +61,7 @@ namespace Retail.Repositories
                 LastName = lastName,
                 Email = email,
                 Password = hashedPassword,
-                Date = date,
+                Date = DateTime.Now,
                 UserTypes = userType
             };
 
@@ -77,7 +77,7 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
+        public async Task UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime originalDate, int userTypeId)
         {
             // Find the existing user by ID
             var user = await _dbContext.Users.FindAsync(idUser) ?? throw new Exception("User not found");
@@ -94,7 +94,7 @@ namespace Retail.Repositories
             user.LastName = lastName;
             user.Email = email;
             user.Password = hashedPassword;
-            user.Date = date;
+            user.Date = originalDate;
             user.UserTypes = userType;
 
             try

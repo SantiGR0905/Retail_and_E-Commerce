@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Users>> GetUsers();
         Task<Users> GetUsersById(int idUser);
-        Task CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId);
-        Task UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime date, int userTypeId);
+        Task CreateUsers(string firstName, string lastName, string email, string password, int userTypeId);
+        Task UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime originalDate, int userTypeId);
         Task SoftDeleteUsers(int idUser);
         Task<bool> ValidateUserAsync(string email, string password);
     }
@@ -28,13 +28,13 @@ namespace Retail.Services
             return await _usersRepository.GetUsersById(idUser);
         }
 
-        public async Task CreateUsers(string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
+        public async Task CreateUsers(string firstName, string lastName, string email, string password, int userTypeId)
         {
-            await _usersRepository.CreateUsers(firstName, lastName, email, password, date, userTypeId);
+            await _usersRepository.CreateUsers(firstName, lastName, email, password, userTypeId);
         }
-        public async Task UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime date, int userTypeId)
+        public async Task UpdateUsers(int idUser, string firstName, string lastName, string email, string password, DateTime originalDate, int userTypeId)
         {
-            await _usersRepository.UpdateUsers(idUser, firstName, lastName, email, password, date, userTypeId);
+            await _usersRepository.UpdateUsers(idUser, firstName, lastName, email, password, originalDate, userTypeId);
         }
         public async Task SoftDeleteUsers(int idUser)
         {

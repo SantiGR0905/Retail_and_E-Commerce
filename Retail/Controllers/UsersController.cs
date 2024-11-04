@@ -44,7 +44,7 @@ public class UsersController : Controller
 
         try
         {
-            await _usersService.CreateUsers(user.FirstName, user.LastName, user.Email, user.Password, user.Date, user.UserTypeId);
+            await _usersService.CreateUsers(user.FirstName, user.LastName, user.Email, user.Password, user.UserTypeId);
         }
         catch (Exception ex)
         {
@@ -66,7 +66,7 @@ public class UsersController : Controller
 
         try
         {
-            await _usersService.UpdateUsers(idUser, user.FirstName, user.LastName, user.Email, user.Password, user.Date, user.UserTypeId);
+            await _usersService.UpdateUsers(idUser, user.FirstName, user.LastName, user.Email, user.Password, existingUser.Date, user.UserTypeId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

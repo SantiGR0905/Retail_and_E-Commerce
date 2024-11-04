@@ -10,6 +10,7 @@
         public required int Active { get; set; }
         public required string Model3D { get; set; }
         public required string Categories { get; set; }
+        public required string Inventories { get; set; }
         public required string Modified { get; set; }
         public required string ModifiedBy { get; set; }
     }

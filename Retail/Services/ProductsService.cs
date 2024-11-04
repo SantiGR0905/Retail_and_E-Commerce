@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Products>> GetProduct();
         Task<Products> GetProductById(int idProduct);
-        Task CreateProduct(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId);
-        Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId);
+        Task CreateProduct(string productName, string description, int active, string model3D, int categoryId, int inventoryId);
+        Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId, int Inventory);
         Task SoftDeleteProduct(int idProduct);
     }
 
@@ -30,14 +30,14 @@ namespace Retail.Services
             return await _productRepository.GetProductsById(idProduct);
         }
 
-        public async Task CreateProduct(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
+        public async Task CreateProduct(string productName, string description, int active, string model3D, int categoryId, int inventoryId)
         {
-            await _productRepository.CreateProducts(productName, description, creationDate, active, model3D, categoryId);
+            await _productRepository.CreateProducts(productName, description, active, model3D, categoryId, inventoryId);
         }
 
-        public async Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
+        public async Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId, int inventoryId)
         {
-            await _productRepository.UpdateProducts(idProducts, productName, description, creationDate, active, model3D, categoryId);
+            await _productRepository.UpdateProducts(idProducts, productName, description, creationDate, active, model3D, categoryId, inventoryId);
         }
 
         public async Task SoftDeleteProduct(int idProduct)

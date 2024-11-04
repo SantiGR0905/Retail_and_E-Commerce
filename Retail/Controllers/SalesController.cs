@@ -43,7 +43,7 @@ public class SalesController : Controller
 
         try
         {
-            await _salesService.CreateSales(sale.SaleDate, sale.StateSale, sale.Direction, sale.UserId, sale.ProductId);
+            await _salesService.CreateSales(sale.StateSale, sale.Direction, sale.UserId, sale.ProductId);
         }
         catch (Exception ex)
         {
@@ -66,7 +66,7 @@ public class SalesController : Controller
 
         try
         {
-            await _salesService.UpdateSales(idsale, sale.SaleDate, sale.StateSale, sale.Direction, sale.UserId, sale.ProductId);
+            await _salesService.UpdateSales(idsale, existingSales.SaleDate, sale.StateSale, sale.Direction, sale.UserId, sale.ProductId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

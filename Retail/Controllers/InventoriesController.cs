@@ -44,7 +44,7 @@ public class InventoriesController : ControllerBase
 
         try
         {
-            await _inventoriesService.CreateInventory(inventory.Amount, inventory.LastUpdate, inventory.ProductId);
+            await _inventoriesService.CreateInventory(inventory.Amount);
         }
         catch (Exception ex)
         {
@@ -68,7 +68,7 @@ public class InventoriesController : ControllerBase
 
         try
         {
-            await _inventoriesService.UpdateInventory(idInventory, inventory.Amount, inventory.LastUpdate, inventory.ProductId);
+            await _inventoriesService.UpdateInventory(inventory.InventoryId, inventory.Amount);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

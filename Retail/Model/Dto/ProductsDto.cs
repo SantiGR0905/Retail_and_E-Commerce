@@ -12,5 +12,6 @@ namespace Retail.Model.Dto
         public int Active { get; set; }
         public string Model3D { get; set; }
         public int CategoryId { get; set; }
+        public int InventoryId { get; set; }
     }
 }

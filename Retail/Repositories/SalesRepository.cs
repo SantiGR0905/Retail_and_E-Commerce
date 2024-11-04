@@ -9,7 +9,7 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Sales>> GetSales();
         Task<Sales> GetSalesById(int idsales);
-        Task CreateSales(DateTime saleDate, int stateSale, string direction, int userId, int productId);
+        Task CreateSales(int stateSale, string direction, int userId, int productId);
         Task UpdateSales(int idsales,DateTime saleDate, int stateSale, string direction, int userId, int productId);
         Task SoftDeleteSales(int idsales);
     }
@@ -47,7 +47,7 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateSales(DateTime saleDate, int stateSale, string direction, int userId, int productId)
+        public async Task CreateSales(int stateSale, string direction, int userId, int productId)
         {
             var user = await _dbContext.Users.FindAsync(userId) ?? throw new Exception("User not found");
             var product = await _dbContext.Products.FindAsync(productId) ?? throw new Exception("Product not found");
@@ -55,7 +55,7 @@ namespace Retail.Repositories
 
             var sale = new Sales
             {
-                SaleDate = saleDate,
+                SaleDate = DateTime.Now,
                 StateSale = stateSale,
                 Direction = direction,
                 Users = user,

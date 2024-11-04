@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Retail.Model;
 using Retail.Services;
+using Retail.Model.Dto;
 
 namespace Retail.Controllers;
 
@@ -38,13 +39,13 @@ public class ProductsController : Controller
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreateProduct(string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
+    public async Task<ActionResult> CreateProduct([FromBody] ProductsDto product)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         try
         {
-            await _productsService.CreateProduct(productName, description, creationDate, active, model3D, categoryId);
+            await _productsService.CreateProduct(product.ProductName, product.Description, product.Active, product.Model3D, product.CategoryId, product.InventoryId);
         }
         catch (Exception ex)
         {
@@ -60,15 +61,15 @@ public class ProductsController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateProduct(int idProduct, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId)
+    public async Task<IActionResult> UpdateProduct([FromBody] ProductsDto product)
     {
-        var existingProducts = await _productsService.GetProductById(idProduct);
+        var existingProducts = await _productsService.GetProductById(product.ProductId);
         if (existingProducts == null) return NotFound();
 
 
         try
         {
-            await _productsService.UpdateProduct(idProduct, productName, description, creationDate, active, model3D, categoryId);
+            await _productsService.UpdateProduct(product.ProductId, product.ProductName, product.Description, existingProducts.CreationDate, product.Active, product.Model3D, product.CategoryId, product.InventoryId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

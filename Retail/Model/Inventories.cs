@@ -8,6 +8,5 @@ namespace Retail.Model
         public required int Amount { get; set; }
         public required DateTime LastUpdate { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public virtual required Products Products { get; set; }
     }
 }

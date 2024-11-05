@@ -11,8 +11,8 @@ builder.Services.AddDbContext<RetailDbContext>(options => options.UseSqlServer(c
 
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
-builder.Services.AddScoped<IInventoriesRepository, InventoriesRepository>();
-builder.Services.AddScoped<IInventoriesService, InventoriesService>();
+builder.Services.AddScoped<IPaymentMethodsRepository, PaymentMethodsRepository>();
+builder.Services.AddScoped<IPaymentMethodsService, PaymentMethodsService>();
 builder.Services.AddScoped<IPermissionsRepository, PermissionsRepository>();
 builder.Services.AddScoped<IPermissionsService, PermissionsService>();
 builder.Services.AddScoped<IPermissionsXUsersRepository, PermissionsXUsersRepository>();

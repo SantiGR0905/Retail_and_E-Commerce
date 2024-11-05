@@ -6,10 +6,10 @@ namespace Retail.Model
     {
         public int SaleId { get; set; }
         public required DateTime SaleDate { get; set; }
-        public required int StateSale { get; set; }
-        public required String Direction { get; set; }
+        public required string StateSale { get; set; }
+        public required string Direction { get; set; }
         public bool IsDeleted { get; set; } = false;
         public virtual required Users Users { get; set; }
-        public virtual required Products Products { get; set; }
+        public virtual required PaymentMethods PaymentMethods { get; set; }
     }
 }

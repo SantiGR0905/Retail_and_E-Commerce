@@ -8,8 +8,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Products>> GetProducts();
         Task<Products> GetProductsById(int idProducts);
-        Task CreateProducts(string productName, string description, int active, string model3D, int categoryId, int inventoryId);
-        Task UpdateProducts(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId, int inventoryId);
+        Task CreateProducts(string productName, string description, decimal price, bool active, string image, int stock, int categoryId);
+        Task UpdateProducts(int idProducts, string productName, string description, DateTime creationDate,decimal price, bool active, string image, int stock, int categoryId);
         Task SoftDeleteProducts(int idProducts);
     }
 
@@ -47,10 +47,9 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateProducts(string productName, string description, int active, string model3D, int categoryId, int inventoryId)
+        public async Task CreateProducts(string productName, string description, decimal price, bool active, string image, int stock, int categoryId)
         {
             var category = await _dbContext.Categories.FindAsync(categoryId) ?? throw new Exception("Category not found");
-            var inventory = await _dbContext.Inventories.FindAsync(inventoryId) ?? throw new Exception("Inventory not found");
 
 
             var product = new Products
@@ -58,10 +57,11 @@ namespace Retail.Repositories
                 ProductName = productName,
                 Description = description,
                 CreationDate = DateTime.Now, 
+                Price = price,
                 Active = active,
-                Model3D = model3D,
+                Image = image,
+                Stock = stock,
                 Categories = category,
-                Inventories = inventory,
             };
 
             try
@@ -76,20 +76,20 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task UpdateProducts(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId, int inventoryId)
+        public async Task UpdateProducts(int idProducts, string productName, string description, DateTime creationDate, decimal price, bool active, string image, int stock, int categoryId)
         {
             var product = await _dbContext.Products.FindAsync(idProducts) ?? throw new Exception("Product not found");
             var category = await _dbContext.Categories.FindAsync(categoryId) ?? throw new Exception("Category not found");
-            var inventory = await _dbContext.Inventories.FindAsync(inventoryId) ?? throw new Exception("Inventory not found");
 
             // Update
             product.ProductName = productName;
             product.Description = description;
             product.CreationDate = creationDate;
+            product.Price = price;
             product.Active = active;
-            product.Model3D = model3D;
+            product.Image = image;
+            product.Stock = stock;
             product.Categories = category;
-            product.Inventories = inventory;
 
             try
             {

@@ -8,7 +8,7 @@
         public required int StateSale { get; set; }
         public required string Direction { get; set; }
         public required string Users { get; set; }
-        public required string Products { get; set; }
+        public required string PaymentMethods { get; set; }
         public required string Modified { get; set; }
         public required string ModifiedBy { get; set; }
     }

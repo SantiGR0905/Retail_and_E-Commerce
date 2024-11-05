@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Sales>> GetSales();
         Task<Sales> GetSalesById(int idsale);
-        Task CreateSales(int stateSale, string direction, int userId, int productId);
-        Task UpdateSales(int idsales, DateTime saleDate, int stateSale, string direction, int userId, int productId);
+        Task CreateSales(string stateSale, string direction, int userId, int paymentMethodId);
+        Task UpdateSales(int idsales, DateTime saleDate, string stateSale, string direction, int userId, int paymentMethodId);
         Task SoftDeleteSales(int idsale);
     }
     public class SalesService : ISalesService
@@ -27,13 +27,13 @@ namespace Retail.Services
             return await _salesRepository.GetSalesById(idsale);
         }
 
-        public async Task CreateSales(int stateSale, string direction, int userId, int productId)
+        public async Task CreateSales(string stateSale, string direction, int userId, int paymentMethodId)
         {
-            await _salesRepository.CreateSales(stateSale, direction, userId, productId);
+            await _salesRepository.CreateSales(stateSale, direction, userId, paymentMethodId);
         }
-        public async Task UpdateSales(int idsales, DateTime saleDate, int stateSale, string direction, int userId, int productId)
+        public async Task UpdateSales(int idsales, DateTime saleDate, string stateSale, string direction, int userId, int paymentMethodId)
         {
-            await _salesRepository.UpdateSales(idsales, saleDate, stateSale, direction, userId, productId);
+            await _salesRepository.UpdateSales(idsales, saleDate, stateSale, direction, userId, paymentMethodId);
         }
         public async Task SoftDeleteSales(int idsale)
         {

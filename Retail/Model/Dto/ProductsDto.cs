@@ -9,9 +9,10 @@ namespace Retail.Model.Dto
         public string ProductName { get; set; }
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
-        public int Active { get; set; }
-        public string Model3D { get; set; }
+        public bool Active { get; set; }
+        public decimal Price { get; set; }
+        public string Image { get; set; }
+        public int Stock {get; set;}
         public int CategoryId { get; set; }
-        public int InventoryId { get; set; }
     }
 }

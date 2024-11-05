@@ -45,7 +45,7 @@ public class ProductsController : Controller
 
         try
         {
-            await _productsService.CreateProduct(product.ProductName, product.Description, product.Active, product.Model3D, product.CategoryId, product.InventoryId);
+            await _productsService.CreateProduct(product.ProductName, product.Description, product.Price, product.Active, product.Image, product.Stock, product.CategoryId);
         }
         catch (Exception ex)
         {
@@ -61,15 +61,15 @@ public class ProductsController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateProduct([FromBody] ProductsDto product)
+    public async Task<IActionResult> UpdateProduct(int idProduct, [FromBody] ProductsDto product)
     {
-        var existingProducts = await _productsService.GetProductById(product.ProductId);
+        var existingProducts = await _productsService.GetProductById(idProduct);
         if (existingProducts == null) return NotFound();
 
 
         try
         {
-            await _productsService.UpdateProduct(product.ProductId, product.ProductName, product.Description, existingProducts.CreationDate, product.Active, product.Model3D, product.CategoryId, product.InventoryId);
+            await _productsService.UpdateProduct(idProduct, product.ProductName, product.Description, existingProducts.CreationDate, product.Price, product.Active, product.Image, product.Stock, product.CategoryId);
             return StatusCode(StatusCodes.Status200OK, ("Updated Successfully"));
         }
         catch (Exception e)

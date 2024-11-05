@@ -9,8 +9,8 @@ namespace Retail.Repositories
     {
         Task<IEnumerable<Sales>> GetSales();
         Task<Sales> GetSalesById(int idsales);
-        Task CreateSales(int stateSale, string direction, int userId, int productId);
-        Task UpdateSales(int idsales,DateTime saleDate, int stateSale, string direction, int userId, int productId);
+        Task CreateSales(string stateSale, string direction, int userId, int paymentMethodId);
+        Task UpdateSales(int idsales, DateTime saleDate, string stateSale, string direction, int userId, int paymentMethodId);
         Task SoftDeleteSales(int idsales);
     }
     public class SalesRepository : ISalesRepository
@@ -26,7 +26,7 @@ namespace Retail.Repositories
             return await _dbContext.Sales
                 .Where(s => !s.IsDeleted)
                 .Include(u => u.Users)
-                .Include(p => p.Products)
+                .Include(p => p.PaymentMethods)
                 .ToListAsync();
         }
 
@@ -34,7 +34,7 @@ namespace Retail.Repositories
         {
             return await _dbContext.Sales
                 .Include(u => u.Users)
-                .Include(p => p.Products)
+                .Include(p => p.PaymentMethods)
                 .FirstOrDefaultAsync(s => s.SaleId == idsales && !s.IsDeleted);
         }
         public async Task SoftDeleteSales(int idsales)
@@ -47,10 +47,10 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task CreateSales(int stateSale, string direction, int userId, int productId)
+        public async Task CreateSales(string stateSale, string direction, int userId, int paymentMethodId)
         {
             var user = await _dbContext.Users.FindAsync(userId) ?? throw new Exception("User not found");
-            var product = await _dbContext.Products.FindAsync(productId) ?? throw new Exception("Product not found");
+            var paymentMethod = await _dbContext.PaymentMethods.FindAsync(paymentMethodId) ?? throw new Exception("Payment Method not found");
 
 
             var sale = new Sales
@@ -59,7 +59,7 @@ namespace Retail.Repositories
                 StateSale = stateSale,
                 Direction = direction,
                 Users = user,
-                Products = product
+                PaymentMethods = paymentMethod,
             };
 
             try
@@ -74,19 +74,19 @@ namespace Retail.Repositories
             }
         }
 
-        public async Task UpdateSales(int idsales, DateTime saleDate, int stateSale, string direction, int userId, int productId)
+        public async Task UpdateSales(int idsales, DateTime saleDate, string stateSale, string direction, int userId, int paymentMethodId)
         {
             var sale = await _dbContext.Sales.FindAsync(idsales) ?? throw new Exception("Sale not found");
 
             var user = await _dbContext.Users.FindAsync(userId) ?? throw new Exception("User not found");
-            var product = await _dbContext.Products.FindAsync(productId) ?? throw new Exception("Product not found");
+            var paymentMethod = await _dbContext.PaymentMethods.FindAsync(paymentMethodId) ?? throw new Exception("Product not found");
 
             // Update
             sale.SaleDate = saleDate;
             sale.StateSale = stateSale;
             sale.Direction = direction;
             sale.Users = user;
-            sale.Products = product;
+            sale.PaymentMethods = paymentMethod;
 
             try
             {

@@ -7,8 +7,8 @@ namespace Retail.Services
     {
         Task<IEnumerable<Products>> GetProduct();
         Task<Products> GetProductById(int idProduct);
-        Task CreateProduct(string productName, string description, int active, string model3D, int categoryId, int inventoryId);
-        Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId, int Inventory);
+        Task CreateProduct(string productName, string description, decimal price, bool active, string image, int stock, int categoryId);
+        Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, decimal price, bool active, string image, int stock, int categoryId);
         Task SoftDeleteProduct(int idProduct);
     }
 
@@ -30,14 +30,14 @@ namespace Retail.Services
             return await _productRepository.GetProductsById(idProduct);
         }
 
-        public async Task CreateProduct(string productName, string description, int active, string model3D, int categoryId, int inventoryId)
+        public async Task CreateProduct(string productName, string description, decimal price, bool active, string image, int stock, int categoryId)
         {
-            await _productRepository.CreateProducts(productName, description, active, model3D, categoryId, inventoryId);
+            await _productRepository.CreateProducts(productName, description, price, active, image, stock, categoryId);
         }
 
-        public async Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, int active, string model3D, int categoryId, int inventoryId)
+        public async Task UpdateProduct(int idProducts, string productName, string description, DateTime creationDate, decimal price, bool active, string image, int stock, int categoryId)
         {
-            await _productRepository.UpdateProducts(idProducts, productName, description, creationDate, active, model3D, categoryId, inventoryId);
+            await _productRepository.UpdateProducts(idProducts, productName, description, creationDate, price, active, image, stock, categoryId);
         }
 
         public async Task SoftDeleteProduct(int idProduct)
